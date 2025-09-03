@@ -26,4 +26,6 @@ data0<-sapply(list.files(datasource,full.names = T),import) %>% #%>% it pipes fo
   setNames(gsub(paste0("^",datasource,"/{0,1}|\\.csv$"),"",names(.))) #paste0 takes several variable and put them together. "gsubs" sub patterns
 #Notes:create_report(dataname ie data0[[file that you want the report from]])
 #inside a code a period is interpreted as . Therefore to be interpreted as a period (ie .com) you need to ad \\
-#data elements of interest for this project are: ----
+#data elements of interest for this project are: ER cases, type of treatment, type of insurance, cost, ----
+
+#HW write comment of plain language of what columns you wish to have to be able to analyse (mainly from the encaunter table) and add them to a new data frame using ?left_join
