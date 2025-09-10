@@ -28,4 +28,10 @@ data0<-sapply(list.files(datasource,full.names = T),import) %>% #%>% it pipes fo
 #inside a code a period is interpreted as . Therefore to be interpreted as a period (ie .com) you need to ad \\
 #data elements of interest for this project are: patient id, encounter class, description, encounter cost, reason description, type of treatment, type of insurance, from procedure: description, base cost, reason description ----
 
-#HW write comment of plain language of what columns you wish to have to be able to analyse (mainly from the encaunter table) and add them to a new data frame using ?left_join
+#HW what columns you wish to have to be able to analyse (mainly from the encounter table) and add them to a new data frame using ?left_join
+data1<-full_join(data0[["encounters"]], data0[["procedures"]], by = c("PATIENT", "START", "STOP"), relationship = "many-to-many")
+
+# keep only specific columns
+#data1 <- data1 %>%
+#. select(PATIENT, START, STOP, diagnosis, procedure_code)
+
