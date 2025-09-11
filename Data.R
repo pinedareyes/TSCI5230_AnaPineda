@@ -35,6 +35,7 @@ data1<-full_join(data0[["encounters"]], data0[["procedures"]], data0[["condition
 fu<-data0[["conditions"]] %>%View # to view a data frame
 #How to find and extract data from a data frame----
 # Find matches for diabetes from a data set & extract it to create a new data
-filter(data0[["conditions"]], grepl("\\bdiab",DESCRIPTION, ignore.case = TRUE))%>%#grep will let you know the row number were the value is true
-    with(data=.,list(patient=unique(PATIENT), encounter=unique(ENCOUNTER)))%>%View()
+diabetes_id<-filter(data0[["conditions"]], grepl("\\bdiab",DESCRIPTION, ignore.case = TRUE))%>%#grep will let you know the row number were the value is true
+    with(data=.,list(patient=unique(PATIENT), encounter=unique(ENCOUNTER)))%>%
+#figure out how to filter by diabetic patien from diferent data frame and join this data take some table that have the patient column and link it to what you created
 
