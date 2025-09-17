@@ -34,8 +34,24 @@ data1<-full_join(data0[["encounters"]], data0[["procedures"]], data0[["condition
 #  select(PATIENT, START, STOP, PROCEDURE_CODE)
 fu<-data0[["conditions"]] %>%View # to view a data frame
 #How to find and extract data from a data frame----
-# Find matches for diabetes from a data set & extract it to create a new data
-diabetes_id<-filter(data0[["conditions"]], grepl("\\bdiab",DESCRIPTION, ignore.case = TRUE))%>%#grep will let you know the row number were the value is true
-    with(data=.,list(patient=unique(PATIENT), encounter=unique(ENCOUNTER)))%>%
-#figure out how to filter by diabetic patien from diferent data frame and join this data take some table that have the patient column and link it to what you created
+# Find matches for diabetes from a data set & extract it to create a new data---- 
+#grep will let you know the row number were the value is true & grepl will just give you TRUE or FALSE
+criteria <- filter(data0[["conditions"]], grepl("\\bdiab",DESCRIPTION, ignore.case = TRUE)) %>% 
+    with(data=.,list(patient_diabetes=unique(PATIENT ), encounter_diabetes=unique(ENCOUNTER)))
+#Id <- data0$patients$Id 
+#Id %in% criteria$patient_diabetes
+data_diab_patients <- data0[["patients"]] %>% 
+  filter(Id %in% criteria$patient_diabetes)
+data_diab_encounters <- data0[["encounters"]] %>% 
+  filter(Id %in% criteria$encounter_diabetes)
+data_diab_patient_encounters <- left_join(data_diab_patients, data_diab_encounters, by=c("Id"="PATIENT"))
 
+#criteria1 <- data0[["encounters"]], grepl("\\bdiab",REASONDESCRIPTION, ignore.case = TRUE))%>%
+#    with(data=.,list(patient=unique(PATIENT), id=unique(Id)));%>%
+#  (data0[["medications"]], grepl("\\bdiab",REASONDESCRIPTION, ignore.case = TRUE))%>%
+#    with(data=.,list(patient=unique(PATIENT), encounter=unique(ENCOUNTER)));
+#.criteria4<-filter(data0[["observations"]], grepl("\\bdiab",DESCRIPTION, ignore.case = TRUE))%>%
+#    with(data=.,list(patient=unique(PATIENT), encounter=unique(ENCOUNTER)))
+#.criteria5<-filter(data0[["procedures"]], grepl("\\bdiab",REASONDESCRIPTION, ignore.case = TRUE))%>%
+#    with(data=.,list(patient=unique(PATIENT), encounter=unique(ENCOUNTER)))
+#.diabetesjunk<-Reduce(intersect,list(.criteria1 & .criteria2 & .criteria3 & .criteria4 & .criteria5))
