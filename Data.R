@@ -44,6 +44,8 @@ data_diab_patients <- data0[["patients"]] %>%
   filter(Id %in% criteria$patient_diabetes)
 data_diab_encounters <- data0[["encounters"]] %>% 
   filter(Id %in% criteria$encounter_diabetes)
+setdiff(criteria$patient_diabetes,data_diab_encounters$PATIENT) #this is a way to validate if there is not data missing
+setdiff(data_diab_encounters$PATIENT,criteria$patient_diabetes)
 data_diab_patient_encounters <- left_join(data_diab_patients, data_diab_encounters, by=c("Id"="PATIENT"))
 
 #criteria1 <- data0[["encounters"]], grepl("\\bdiab",REASONDESCRIPTION, ignore.case = TRUE))%>%
