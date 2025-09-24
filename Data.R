@@ -20,6 +20,9 @@ library(ggfortify);
 options(max.print=500);
 panderOptions('table.split.table',Inf); panderOptions('table.split.cells',Inf)
 datasource <- "../output/csv/"
+rxnorm <- "../output/RxNav_6809_table.csv"
+rxnorm_lookup<-import(rxnorm) %>% 
+  filter(.,termType %in% c("BN","IN","MIN","PIN","SBD","SBDC","SBDF","SBDFP","SBDG","SCD","SCDC","SCDF","SCDG"))
 #data0<-import(list.files(datasource,full.names = T) [9]) is to name files to identify/ specific files
 data0<-sapply(list.files(datasource,full.names = T),import) %>% #%>% it is a pipe expression form left to right to continue a command in a new line
   #rename all the objects in data0 to get rid of the prefix "../output/csv/" and suffix ".csv"
@@ -47,6 +50,14 @@ data_diab_encounters <- data0[["encounters"]] %>%
 setdiff(criteria$patient_diabetes,data_diab_encounters$PATIENT) #this is a way to validate if there is not data missing
 setdiff(data_diab_encounters$PATIENT,criteria$patient_diabetes)
 data_diab_patient_encounters <- left_join(data_diab_patients, data_diab_encounters, by=c("Id"="PATIENT"))
+# this a way to validate your join and stop the script if the result isn’t what you expect ----
+if (nrow(data_diab_patient_encounters) != nrow(data_diab_encounters)) {
+  stop("Join rows do not match the patient dataset")
+} else {
+  message("All clear")
+}
+med_met <- filter(data0$medications, CODE %in% rxnorm_lookup$rxcui)
+
 
 #criteria1 <- data0[["encounters"]], grepl("\\bdiab",REASONDESCRIPTION, ignore.case = TRUE))%>%
 #    with(data=.,list(patient=unique(PATIENT), id=unique(Id)));%>%
