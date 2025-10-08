@@ -19,9 +19,9 @@ library(ggfortify);
 #(the 4 dashes after a comment will help you colapse information on your screen. devide it by sections)
 options(max.print=500);
 panderOptions('table.split.table',Inf); panderOptions('table.split.cells',Inf)
-datasource <- "../output/csv/"
-rxnorm <- "../output/RxNav_6809_table.csv"
-rxnorm_lookup<-import(rxnorm) %>% 
+datasource <- "./output/csv/"
+rxnorm <- "./output/Metformin_RxNav_6809_table.csv"
+rxnorm_lookup<-import(rxnorm,skip=2) %>% 
   filter(.,termType %in% c("BN","IN","MIN","PIN","SBD","SBDC","SBDF","SBDFP","SBDG","SCD","SCDC","SCDF","SCDG"))
 #data0<-import(list.files(datasource,full.names = T) [9]) is to name files to identify/ specific files
 data0<-sapply(list.files(datasource,full.names = T),import) %>% #%>% it is a pipe expression form left to right to continue a command in a new line
@@ -31,7 +31,7 @@ data0<-sapply(list.files(datasource,full.names = T),import) %>% #%>% it is a pip
 #inside a code a period is interpreted as . Therefore to be interpreted as a period (ie .com) you need to ad \\
 #data elements of interest for this project are: patient id, encounter class, description, encounter cost, reason description, type of treatment, type of insurance, from procedure: description, base cost, reason description
 #HW what columns you wish to have to be able to analyse (mainly from the encounter table) and add them to a new data frame using ?left_join----
-data1<-full_join(data0[["encounters"]], data0[["procedures"]], data0[["conditions"]], by = c("PATIENT", "START", "STOP"), relationship = "many-to-many")
+#data1<-full_join(data0[["encounters"]], data0[["procedures"]], data0[["conditions"]], by = c("PATIENT", "START", "STOP"), relationship = "many-to-many")
 # keep only specific columns
 #data1 <- data1 %>%
 #  select(PATIENT, START, STOP, PROCEDURE_CODE)
