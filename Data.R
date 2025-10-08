@@ -58,7 +58,16 @@ if (nrow(data_diab_patient_encounters) != nrow(data_diab_encounters)) {
 }
 med_met <- filter(data0$medications, CODE %in% rxnorm_lookup$rxcui)
 
-
+#age distribution (average, min, max)
+data0$patients %>% mutate(DEATHDATE=as.Date(DEATHDATE),BIRTHDATE=as.Date(BIRTHDATE),
+                            alive=is.na(DEATHDATE),
+                          enddate=(pmin(Sys.Date(),DEATHDATE,na.rm = TRUE)),
+                            age=as.numeric(enddate-BIRTHDATE)/365.25)%>%
+    summarize(
+      avg_age = mean (age, na.rm=TRUE), 
+      min_age=min(age,na.rm=TRUE), 
+      max_age=max(age,na.rm=TRUE),
+      count=n())
 #criteria1 <- data0[["encounters"]], grepl("\\bdiab",REASONDESCRIPTION, ignore.case = TRUE))%>%
 #    with(data=.,list(patient=unique(PATIENT), id=unique(Id)));%>%
 #  (data0[["medications"]], grepl("\\bdiab",REASONDESCRIPTION, ignore.case = TRUE))%>%

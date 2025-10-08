@@ -16,7 +16,7 @@ options(max.print=500);
 panderOptions('table.split.table',Inf); panderOptions('table.split.cells',Inf)
 datasource <- "../output/csv/"
 
-runsynthea <- function(samplesize = 100,
+runsynthea <- function(samplesize = 1000,
                        state = "",
                        city = "",
                        gender = "",
