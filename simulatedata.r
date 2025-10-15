@@ -22,7 +22,7 @@ runsynthea <- function(samplesize = 1000,
                        gender = "",
                        minage = 0,
                        maxage = 120,
-                       syntheaoptions = "--exporter.fhir.export=false --exporter.csv.export=true --exporter.csv.append_mode=true") {
+                       syntheaoptions = "--exporter.fhir.export=false --exporter.csv.export=true --exporter.csv.append_mode=false") {
   if (state != "") {
     state <- paste0('"', state, '"')
     if (city != "") {

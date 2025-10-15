@@ -20,6 +20,8 @@ library(ggfortify);
 options(max.print=500);
 panderOptions('table.split.table',Inf); panderOptions('table.split.cells',Inf)
 datasource <- "./output/csv/"
+check_unique <- function(xx){xx} == {nrow(unique(xx))}
+
 rxnorm <- "./output/Metformin_RxNav_6809_table.csv"
 rxnorm_lookup<-import(rxnorm,skip=2) %>% 
   filter(.,termType %in% c("BN","IN","MIN","PIN","SBD","SBDC","SBDF","SBDFP","SBDG","SCD","SCDC","SCDF","SCDG"))
@@ -35,7 +37,6 @@ data0<-sapply(list.files(datasource,full.names = T),import) %>% #%>% it is a pip
 # keep only specific columns
 #data1 <- data1 %>%
 #  select(PATIENT, START, STOP, PROCEDURE_CODE)
-fu<-data0[["conditions"]] %>%View # to view a data frame
 #How to find and extract data from a data frame----
 # Find matches for diabetes from a data set & extract it to create a new data---- 
 #grep will let you know the row number were the value is true & grepl will just give you TRUE or FALSE
@@ -49,7 +50,8 @@ data_diab_encounters <- data0[["encounters"]] %>%
   filter(Id %in% criteria$encounter_diabetes)
 setdiff(criteria$patient_diabetes,data_diab_encounters$PATIENT) #this is a way to validate if there is not data missing
 setdiff(data_diab_encounters$PATIENT,criteria$patient_diabetes)
-data_diab_patient_encounters <- left_join(data_diab_patients, data_diab_encounters, by=c("Id"="PATIENT"))
+data_diab_patient_encounters <- left_join(data_diab_patients, data_diab_encounters, by=c("Id"="PATIENT")) %>%
+  mutate(ENCOUNTER=Id.y) 
 # this a way to validate your join and stop the script if the result isn’t what you expect ----
 if (nrow(data_diab_patient_encounters) != nrow(data_diab_encounters)) {
   stop("Join rows do not match the patient dataset")
@@ -57,13 +59,15 @@ if (nrow(data_diab_patient_encounters) != nrow(data_diab_encounters)) {
   message("All clear")
 }
 med_met <- filter(data0$medications, CODE %in% rxnorm_lookup$rxcui)
+data_diab_encountersmet<-left_join(data_diab_patient_encounters,med_met,by=c("ENCOUNTER"="ENCOUNTER")) #table with medication, demographics & encounters
 
 #age distribution (average, min, max)
 data0$patients %>% mutate(DEATHDATE=as.Date(DEATHDATE),BIRTHDATE=as.Date(BIRTHDATE),
                             alive=is.na(DEATHDATE),
                           enddate=(pmin(Sys.Date(),DEATHDATE,na.rm = TRUE)),
                             age=as.numeric(enddate-BIRTHDATE)/365.25)%>%
-    summarize(
+  group_by(alive) %>% 
+      summarize(
       avg_age = mean (age, na.rm=TRUE), 
       min_age=min(age,na.rm=TRUE), 
       max_age=max(age,na.rm=TRUE),
