@@ -72,12 +72,4 @@ data0$patients %>% mutate(DEATHDATE=as.Date(DEATHDATE),BIRTHDATE=as.Date(BIRTHDA
       min_age=min(age,na.rm=TRUE), 
       max_age=max(age,na.rm=TRUE),
       count=n())
-#criteria1 <- data0[["encounters"]], grepl("\\bdiab",REASONDESCRIPTION, ignore.case = TRUE))%>%
-#    with(data=.,list(patient=unique(PATIENT), id=unique(Id)));%>%
-#  (data0[["medications"]], grepl("\\bdiab",REASONDESCRIPTION, ignore.case = TRUE))%>%
-#    with(data=.,list(patient=unique(PATIENT), encounter=unique(ENCOUNTER)));
-#.criteria4<-filter(data0[["observations"]], grepl("\\bdiab",DESCRIPTION, ignore.case = TRUE))%>%
-#    with(data=.,list(patient=unique(PATIENT), encounter=unique(ENCOUNTER)))
-#.criteria5<-filter(data0[["procedures"]], grepl("\\bdiab",REASONDESCRIPTION, ignore.case = TRUE))%>%
-#    with(data=.,list(patient=unique(PATIENT), encounter=unique(ENCOUNTER)))
-#.diabetesjunk<-Reduce(intersect,list(.criteria1 & .criteria2 & .criteria3 & .criteria4 & .criteria5))
+
