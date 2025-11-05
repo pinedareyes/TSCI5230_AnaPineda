@@ -13,6 +13,7 @@ import pandas as pd
 import numpy as np
 import os
 import re
+import pprint
 from pathlib import Path
 from datetime import date
 
@@ -111,8 +112,9 @@ if 'conditions' in data0:
 
     # Metformin filtering and joining
     # Filter medications by CODE being in rxnorm_lookup$rxcui
-    med_met = data0['medications'][data0['medications']['CODE'].isin(rxnorm_lookup['rxcui'])]
-
+    med_met = data0['medications'][data0['medications']['CODE'].isin(rxnorm_lookup['rxcui'])].copy(deep=True)
+    med_met["TOTALCOST_Rounded"]= med_met ["TOTALCOST"].round() #round total cost of medication
+    
     # left_join(data_diab_patient_encounters, med_met, by=c("ENCOUNTER"="ENCOUNTER"))
     data_diab_encountersmet = pd.merge(
         data_diab_patient_encounters, 
@@ -161,3 +163,57 @@ if 'patients' in data0:
     print(age_summary)
 #use repl_python() in the console to interact with python interface
 #.keys() use to see all the objects in a list
+
+# They are several ways to round a number. below you will find two different codes to round.
+  #Option 1: data0["medications"]["TOTALCOST"].round()
+  #Option 2: round(data0["medications"]["TOTALCOST"])
+  
+# Converting a column to a Pyton list (AKA vector in R)
+med_met["TOTALCOST"].tolist() #gives you raw numbers 
+TOTALCOST_list=med_met["TOTALCOST"].tolist() 
+
+#Lists
+#There are several ways to transform a value in list. Below you will find 3 commands to round a number in this list. 
+result=[]
+for xx in TOTALCOST_list:
+  #result=result+[round(xx)]
+  #result+=[round(xx)]
+  result.append(round(xx))
+
+# List Comprehension
+result2=[round(xx) for xx in TOTALCOST_list] 
+
+result3=[round(xx) for xx in TOTALCOST_list if xx >10] #if you want to "filter" to match a particular criteria
+
+result4=[round(xx)  if xx >10 else -1 for xx in TOTALCOST_list] #if doing "if" "else" you have to have "if" first
+
+# Dictionaries
+#There are several ways to create a dictionary
+dresult={}
+for xx in data0.keys():
+  #dresult[xx]=data0[xx].keys().tolist()
+  dresult.update({xx:data0[xx].keys().tolist()})
+
+pprint.pprint(dresult) #to see the dictionary in a more formated way
+
+
+{"patients":['Id', 'BIRTHDATE', 'DEATHDATE', 'SSN', 'DRIVERS'],"observations":['ENCOUNTER', 'CATEGORY', 'CODE', 'DESCRIPTION']}
+
+
+#Dictionary Comprehension
+
+dresult2={xx:data0[xx].keys().tolist() for xx in data0.keys()}
+pprint.pprint(dresult2)
+
+#Creating Dictionary with Zip
+#1.create list of keys to preserve order
+tablenames=data0.keys()
+
+#2.create a list with table names using list comprehension
+columnnames=[data0[xx].keys().tolist() for xx in tablenames]
+
+#3Combine the list of keys with the list 
+dresult3=dict(zip(tablenames, columnnames))
+pprint.pprint(dresult3)
+
+
